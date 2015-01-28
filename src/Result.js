@@ -8,7 +8,7 @@
             marker = "md";
         }
 
-        var result = line.match( new RegExp("(\\s*)(\\/*|#*|\\**)?(\\s*)(@"+marker+"|"+marker+"@)\\[?(\\w*)\\]?\\s*(.*)") );
+        var result = line.match( new RegExp("(\\s*)(\\/*|#*|\\/*\\**)?(\\s*)(@"+marker+"|"+marker+"@)\\[?(\\w*)\\]?\\s*(.*)") );
 
         if( result instanceof Array ){
 
@@ -25,7 +25,7 @@
                 this.replaceReg = new RegExp("^\\s{0,"+this.indent.length+"}");
             }else{
                 // それ以外の場合.
-                this.replaceReg = new RegExp("^\\s*(\\/+|#+|\\**)\\s{0,"+this.whiteSpace.length+"}");
+                this.replaceReg = new RegExp("^\\s*(\\/+|#+|\\/*\\**)\\s{0,"+this.whiteSpace.length+"}");
             }
 
         }

@@ -8,6 +8,11 @@
  * md@
  */
 
+ /** @md
+  * test
+  * md@
+  */
+
 function(){
 
     // @md
