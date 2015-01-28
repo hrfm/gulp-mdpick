@@ -8,7 +8,7 @@
             marker = "md";
         }
 
-        var result = line.match( new RegExp("(\\s*)(\\/*|#*)?(\\s*)(@"+marker+"|"+marker+"@)\\[?(\\w*)\\]?\\s*(.*)") );
+        var result = line.match( new RegExp("(\\s*)(\\/*|#*|\\**)?(\\s*)(@"+marker+"|"+marker+"@)\\[?(\\w*)\\]?\\s*(.*)") );
 
         if( result instanceof Array ){
 
@@ -18,14 +18,14 @@
             this.marker       = result[4];
             this.syntax       = result[5];
             this.inline       = result[6] || "";
-            
+
             if( this.useSyntax() ){
                 // syntax 指定の場合はインデント文字列を
                 // @mdpick が記述されている行のインデント文字列数のみ削除する
-                this.replaceReg = new RegExp("^\\s{"+this.indent.length+"}");
+                this.replaceReg = new RegExp("^\\s{0,"+this.indent.length+"}");
             }else{
                 // それ以外の場合.
-                this.replaceReg = new RegExp("^\\s*(\\/+|#+)\\s{"+this.whiteSpace.length+"}");
+                this.replaceReg = new RegExp("^\\s*(\\/+|#+|\\**)\\s{0,"+this.whiteSpace.length+"}");
             }
 
         }
