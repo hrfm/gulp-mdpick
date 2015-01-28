@@ -43,10 +43,12 @@ a.js
 
 // ....
 
-// @md
-// いろいろ説明を
-// ここに書いておくよ
-// @md
+/**
+ * @md
+ * いろいろ説明を
+ * ここに書いておくよ
+ * @md
+ */
 
 ```
 
@@ -114,9 +116,7 @@ b.jsのファイルだよ
 
 a.js
 ```js
-// @md
-// function の説明。
-// md@
+// @md function の説明。
 // @md[js]
 function(){
 	return "a";
@@ -126,9 +126,7 @@ function(){
 
 b.js
 ```js
-// @md
-// function の説明。
-// md@
+// @md function の説明。
 // @md[js]
 function(){
 	return "a";
