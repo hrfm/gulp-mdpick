@@ -101,30 +101,42 @@
                 var r = new Result(lines[i]);
 
                 if( r.isMatched() ){
+
                     if( r.isStart() ){
+                        
                         var src   = [];
                         var isEnd = false;
 
                         if( r.useSyntax() ){
                             src.push("```"+ r.syntax);
                         }
-                        do{
-                            if( ++i == len ){
-                                isEnd = true;
-                            }else{
-                                var r2 = new Result(lines[i]);
-                                if( r2.isEnd() ){
+
+                        if( r.hasInline() ){
+                            // inline 記述の場合は閉じタグを調べずその後に書かれたものを出力する.
+                            src.push(r.inline);
+                        }else{
+                            do{
+                                if( ++i == len ){
                                     isEnd = true;
                                 }else{
-                                    src.push(r.replace(lines[i]));
+                                    var r2 = new Result(lines[i]);
+                                    if( r2.isEnd() ){
+                                        isEnd = true;
+                                    }else{
+                                        src.push(r.replace(lines[i]));
+                                    }
                                 }
-                            }
-                        }while( !isEnd );
+                            }while( !isEnd );
+                        }
+
                         if( r.useSyntax() ){
                             src.push("```");
                         }
+
                     }
+                    
                     mdpick.push( src.join("\n") );
+
                 }
 
             }
