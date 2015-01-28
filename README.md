@@ -114,6 +114,9 @@ b.jsのファイルだよ
 
 a.js
 ```js
+// @md
+// function の説明。
+// md@
 // @md[js]
 function(){
 	return "a";
@@ -123,6 +126,9 @@ function(){
 
 b.js
 ```js
+// @md
+// function の説明。
+// md@
 // @md[js]
 function(){
 	return "a";
@@ -139,6 +145,8 @@ dest/README.md
 
 ## a.js
 
+function の説明。
+
 ```js
 function(){
 	return "a"
@@ -146,6 +154,8 @@ function(){
 ```
 
 ## b.js
+
+function の説明。
 
 ```js
 function(){
