@@ -26,9 +26,9 @@ npm install gulp-mdpick
 src で指定したファイルから
 
 ```
-'@md'
+@md
 
-'md@'
+md@
 ```
 
 でかこった範囲が、Markdown ファイルに出力されます
