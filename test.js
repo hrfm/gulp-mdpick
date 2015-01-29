@@ -1,9 +1,9 @@
 var g      = require('gulp');
 var mdpick = require('./index.js');
 
-g.src("**/*.js")
+g.src(["**/*.*","!dest/"])
  .pipe( mdpick({
         into : "dest/Readme.md",
-        verbose : true
+        verbose : false
     }) )
  .pipe( g.dest("dest") );

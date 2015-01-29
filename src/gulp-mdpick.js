@@ -53,7 +53,7 @@
             // If file is null.
             // Skip this transform.
             if (file.isNull()) {
-                this.push(file);
+                //this.push(file);
                 return callback();
             }
 
@@ -66,7 +66,19 @@
 
             // Paths are resolved by gulp
 
-            var filename = file.path.substr(file.path.lastIndexOf("/")+1,file.path.length);
+            var fileRelativePath = path.relative( ".", file.path );
+            var filename  = file.path.substr( file.path.lastIndexOf("/")+1, file.path.length );
+            var extension = filename.substr( filename.lastIndexOf(".")+1, filename.length );
+
+            // markdown は無視.
+            if( extension.toLowerCase() == "md" ){
+                callback();
+                return;
+            }
+
+            if( options.verbose == true ){
+                log( "Processing " + fileRelativePath );
+            }
 
             // ファイルの内容を１行ずつ調べ格納する.
 
@@ -75,7 +87,7 @@
 
             for( var i=0,len=lines.length; i<len; i++ ){
 
-                var r = new Line(lines[i],options.marker);
+                var r = new Line(lines[i],options.marker,extension);
 
                 if( r.isMatched() ){
 
@@ -96,7 +108,7 @@
                                 if( ++i == len ){
                                     isEnd = true;
                                 }else{
-                                    var r2 = new Line(lines[i],options.marker);
+                                    var r2 = new Line(lines[i],options.marker,extension);
                                     if( r2.isStart() ){
                                         error("Can't use @" + options.marker + " during picking.");
                                     }else if( r2.isEnd() ){
@@ -121,9 +133,9 @@
             }
 
             if( 1 < picked.length ){
-                if( options.verbose == true ){
-                    log( "Pick from " + path.relative( ".", file.path ) );
-                }
+                //if( options.verbose == true ){
+                    log( "Pick from " + fileRelativePath );
+                //}
                 output.push( picked.join("\n\n") );
             }
 
@@ -145,23 +157,32 @@
 
             if( typeof options.into !== "undefined" ){
 
-                var into = fs.readFileSync( path.resolve( ".", options.into ) );
-                var reg  = /<!\-+\s*@mdpick\s*\-+>(.|\n|\r)+<!\-+\s*mdpick@\s*\-+>/m;
-                var src  = into.toString();
-
-                if( src.match(reg) ){
-                    outputFile.contents = new Buffer( src.replace(reg,output.join("\n\n")) );
-                }else{
-                    outputFile.contents = new Buffer( src + "\n\n" + output.join("\n\n") );
-                }
-
                 log( "Write markdown into " + options.into );
+
+                try{
+
+                    var into = fs.readFileSync( path.resolve( ".", options.into ) );
+
+                    var reg  = /<!\-+\s*@mdpick\s*\-+>(.|\n|\r)+<!\-+\s*mdpick@\s*\-+>/m;
+                    var src  = into.toString();
+
+                    if( src.match(reg) ){
+                        outputFile.contents = new Buffer( src.replace(reg,output.join("\n\n")) );
+                    }else{
+                        outputFile.contents = new Buffer( src + "\n\n" + output.join("\n\n") );
+                    }
+
+
+                }catch(e){
+
+                    outputFile.contents = new Buffer(output.join("\n\n"));
+
+                }
                 
             }else{
                 
-                outputFile.contents = new Buffer(output.join("\n\n"));
-
                 log( "Create markdown file " + options.out );
+                outputFile.contents = new Buffer(output.join("\n\n"));
 
             }
 
