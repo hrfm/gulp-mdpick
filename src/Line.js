@@ -16,7 +16,7 @@
                 "^(\\s*)" +                                 // Starting \s if exists
                 uncmt +                                     // uncomment string
                 "(\\s*)" +                                  // \s if exists
-                "(@"+marker+"|"+marker+"@)(?=\\[|\\s|$)" +  // mdpick marker will only before '[' or \s or $
+                "(@"+marker+"|"+marker+"@)(?=\\[|\\s|$)" +  // mdpick marker that is before '[' or \s or $
                 "(?:\\[(\\w*)\\])?" +                       // syntax if exists.
                 "\\s*(.*)"                                  // inline text.
             )
