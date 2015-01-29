@@ -80,7 +80,7 @@
                 log( "Processing " + fileRelativePath );
             }
 
-            // ファイルの内容を１行ずつ調べ格納する.
+            // 行単位で読み込み処理する.
 
             var picked = [["## "+filename]];
             var lines  = file.contents.toString().split(/\r?\n/);
@@ -89,40 +89,56 @@
 
                 var r = new Line(lines[i],options.marker,extension);
 
+                // マーカーの上限とマッチした場合.
                 if( r.isMatched() ){
 
+                    var src = [], isEnd = false;
+
+                    // 開始タグであった場合 pick を開始する.
                     if( r.isStart() ){
 
-                        var src   = [];
-                        var isEnd = false;
-
-                        if( r.useSyntax() ){
-                            src.push("```"+ r.syntax);
-                        }
+                        // コードハイライト用の syntax 指定がある場合は開始文字列を追記.
+                        if( r.useSyntax() ) src.push("```"+ r.syntax);
 
                         if( r.isInline() ){
+
                             // inline 記述の場合は閉じタグを調べずその後に書かれたものを出力する.
                             src.push(r.inline);
+
                         }else{
+
+                            // それ以外の場合. isEnd == true になるまで行を処理しつづける.
                             do{
+
                                 if( ++i == len ){
+                                    
+                                    // 最終行であった場合は終了.
                                     isEnd = true;
+
                                 }else{
+                                    
+                                    // 次の行を調べる.
                                     var r2 = new Line(lines[i],options.marker,extension);
+
                                     if( r2.isStart() ){
+                                        // 開始タグ内に開始タグがある場合はエラー
                                         error("Can't use @" + options.marker + " during picking.");
                                     }else if( r2.isEnd() ){
+                                        // 閉じタグがある場合は終了
                                         isEnd = true;
                                     }else{
+                                        // それ以外の場合はインデント等を消して出力に追加.
                                         src.push(r.replace(lines[i]));
                                     }
+
                                 }
+
                             }while( !isEnd );
+
                         }
 
-                        if( r.useSyntax() ){
-                            src.push("```");
-                        }
+                        // コードハイライト用の syntax 指定がある場合は終了文字列を追記.
+                        if( r.useSyntax() ) src.push("```");
 
                     }
                     
@@ -132,13 +148,14 @@
 
             }
 
+            // pick された行が1行以上ある場合に output に追加.
             if( 1 < picked.length ){
                 //if( options.verbose == true ){
                     log( "Pick from " + fileRelativePath );
                 //}
                 output.push( picked.join("\n\n") );
             }
-
+            
             callback();
 
         }
