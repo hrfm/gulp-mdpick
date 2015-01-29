@@ -126,7 +126,7 @@
                 }
                 output.push( picked.join("\n\n") );
             }
-            
+
             callback();
 
         }
@@ -155,13 +155,13 @@
                     outputFile.contents = new Buffer( src + "\n\n" + output.join("\n\n") );
                 }
 
-                log("Write markdown into '" + options.into + "'");
-
+                log( "Write markdown into " + options.into );
+                
             }else{
-
+                
                 outputFile.contents = new Buffer(output.join("\n\n"));
 
-                log("Create markdown file '" + options.out + "'");
+                log( "Create markdown file " + options.out );
 
             }
 
