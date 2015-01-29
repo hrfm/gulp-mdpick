@@ -15,13 +15,8 @@
                 return "(#+)?";
             case "php":
                 return "(\\/+|\\/*\\*+|#+)?";
-            case "js":
-            case "ts":
-            case "sass":
-            case "scss":
-                return "(\\/+|\\/+\\*+|\\*+)?";
             default :
-                return undefined;
+                return "(\\/+|\\/+\\*+|\\*+)?";
         }
     }
 
