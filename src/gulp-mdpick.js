@@ -68,10 +68,6 @@
 
             var filename = file.path.substr(file.path.lastIndexOf("/")+1,file.path.length);
 
-            if( options.verbose == true ){
-                log( "Picking " + path.relative( ".", file.path ) );
-            }
-
             // ファイルの内容を１行ずつ調べ格納する.
 
             var picked = [["## "+filename]];
@@ -125,9 +121,12 @@
             }
 
             if( 1 < picked.length ){
+                if( options.verbose == true ){
+                    log( "Pick from " + path.relative( ".", file.path ) );
+                }
                 output.push( picked.join("\n\n") );
             }
-
+            
             callback();
 
         }
@@ -157,7 +156,7 @@
                 }
 
                 log("Write markdown into '" + options.into + "'");
-                
+
             }else{
 
                 outputFile.contents = new Buffer(output.join("\n\n"));
