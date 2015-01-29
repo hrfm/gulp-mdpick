@@ -1,21 +1,5 @@
 (function() {
 
-    // 設計思想
-
-    // @md
-    // このコメントを .md に出力する
-    // md@
-
-    // @md[php]
-    // このコメントは ```php として出力する
-    // md@
-
-    // デフォの出力先は Readme.md
-    // 存在していた場合は 末尾もしくは
-    // <!-- mdpick -->
-    // <!-- endmdpick -->
-    // 内に出力する.
-
     "use strict;"
 
     var PLUGIN_NAME = 'gulp-mdpick';
@@ -24,7 +8,8 @@
         path     = require('path'),
         gutil    = require('gulp-util'),
         through2 = require('through2'),
-        Result   = require('./Result.js');
+        extend   = require('extend'),
+        Line     = require('./Line.js');
 
     // --- Log utils.
 
@@ -32,11 +17,11 @@
         gutil.log( gutil.colors.magenta(PLUGIN_NAME), message);
     }
 
-    function warn (message) {
+    function warn(message) {
         log(gutil.colors.red('WARNING') + ' ' + message);
     }
 
-    function error (message) {
+    function error(message) {
         return new gutil.PluginError( PLUGIN_NAME, message );
     }
 
@@ -44,17 +29,11 @@
 
     return module.exports = function ( options ) {
 
-        var out = "README.md";
-        var into;
-
-        if( typeof options !== "undefined" ){
-            if( typeof options.out === "string" ){
-                out  = options.out;
-            }
-            if( typeof options.into === "string" ){
-                into = fs.readFileSync( path.resolve( ".", options.into ) );
-            }
-        }
+        options = extend({
+            "out"    : "README.md",
+            "into"   : undefined,
+            "marker" : "md"
+        },options);
 
         // --- 出力の設定.
 
@@ -88,22 +67,21 @@
 
             var filename = file.path.substr(file.path.lastIndexOf("/")+1,file.path.length);
 
-            log( "Reading " + filename + "." )
+            log( "Picking " + filename );
 
             // ファイルの内容を１行ずつ調べ格納する.
 
-            var result;
-            var mdpick = [["## "+filename]];
+            var picked = [["## "+filename]];
             var lines  = file.contents.toString().split(/\r?\n/);
 
             for( var i=0,len=lines.length; i<len; i++ ){
 
-                var r = new Result(lines[i]);
+                var r = new Line(lines[i],options.marker);
 
                 if( r.isMatched() ){
 
                     if( r.isStart() ){
-                        
+
                         var src   = [];
                         var isEnd = false;
 
@@ -111,7 +89,7 @@
                             src.push("```"+ r.syntax);
                         }
 
-                        if( r.hasInline() ){
+                        if( r.isInline() ){
                             // inline 記述の場合は閉じタグを調べずその後に書かれたものを出力する.
                             src.push(r.inline);
                         }else{
@@ -119,8 +97,10 @@
                                 if( ++i == len ){
                                     isEnd = true;
                                 }else{
-                                    var r2 = new Result(lines[i]);
-                                    if( r2.isEnd() ){
+                                    var r2 = new Line(lines[i],options.marker);
+                                    if( r2.isStart() ){
+                                        error("Can't use @" + options.marker + " during picking.");
+                                    }else if( r2.isEnd() ){
                                         isEnd = true;
                                     }else{
                                         src.push(r.replace(lines[i]));
@@ -135,13 +115,15 @@
 
                     }
                     
-                    mdpick.push( src.join("\n") );
+                    picked.push( src.join("\n") );
 
                 }
 
             }
 
-            output.push( mdpick.join("\n\n") );
+            if( 1 < picked.length ){
+                output.push( picked.join("\n\n") );
+            }
 
             callback();
 
@@ -154,15 +136,16 @@
             var outputFile = new gutil.File({
                 base : path.join( __dirname, './fixtures/'),
                 cwd  : __dirname,
-                path : path.join( __dirname, './fixtures/', out )
+                path : path.join( __dirname, './fixtures/', options.out )
             });
 
             output.push("<!-- mdpick@ -->");
 
-            if( typeof into !== "undefined" ){
+            if( typeof options.into !== "undefined" ){
 
-                var reg = /<!\-+\s*@mdpick\s*\-+>(.|\n|\r)+<!\-+\s*mdpick@\s*\-+>/m;
-                var src = into.toString();
+                var into = fs.readFileSync( path.resolve( ".", options.into ) );
+                var reg  = /<!\-+\s*@mdpick\s*\-+>(.|\n|\r)+<!\-+\s*mdpick@\s*\-+>/m;
+                var src  = into.toString();
 
                 if( src.match(reg) ){
                     outputFile.contents = new Buffer( src.replace(reg,output.join("\n\n")) );
@@ -174,10 +157,9 @@
 
             }else{
 
-
                 outputFile.contents = new Buffer(output.join("\n\n"));
 
-                log("Create markdown file '" + out + "'");
+                log("Create markdown file '" + options.out + "'");
 
             }
 
