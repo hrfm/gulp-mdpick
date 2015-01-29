@@ -17,7 +17,7 @@
                 return "(\\/+|\\/*\\*+|#+)?";
             case "js":
             case "ts":
-                return "(\\/+|\\/*\\*+)?";
+                return "(\\/+|\\/+\\*+|\\*+)?";
             default :
                 return undefined;
         }
