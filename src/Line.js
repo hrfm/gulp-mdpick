@@ -2,20 +2,8 @@
 
     "use strict;"
 
-    var _uncomment = function(extension){
-        switch( extension ){
-            case "php":
-                return "(\\/+|\\/*\\*+|#+)?"
-            default :
-                return "(\\/+|\\/*\\*+)?";
-        }
-    }
+    var _uncomment = require("./uncomment.js");
 
-    /**
-     * @md
-     * ## isMatched
-     * md@
-     */
     var Line = function( line, marker, extension ){
 
         if( typeof marker === "undefined" ){

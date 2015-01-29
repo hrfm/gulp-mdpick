@@ -30,9 +30,10 @@
     return module.exports = function ( options ) {
 
         options = extend({
-            "out"    : "README.md",
-            "into"   : undefined,
-            "marker" : "md"
+            "out"     : "README.md",
+            "into"    : undefined,
+            "marker"  : "md",
+            "verbose" : false
         },options);
 
         // --- 出力の設定.
@@ -67,7 +68,9 @@
 
             var filename = file.path.substr(file.path.lastIndexOf("/")+1,file.path.length);
 
-            log( "Picking " + filename );
+            if( options.verbose == true ){
+                log( "Picking " + path.relative( ".", file.path ) );
+            }
 
             // ファイルの内容を１行ずつ調べ格納する.
 
@@ -154,7 +157,7 @@
                 }
 
                 log("Write markdown into '" + options.into + "'");
-
+                
             }else{
 
                 outputFile.contents = new Buffer(output.join("\n\n"));
