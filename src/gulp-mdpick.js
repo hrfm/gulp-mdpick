@@ -116,7 +116,7 @@
                                     isEnd = true;
 
                                 }else{
-                                    
+
                                     // 次の行を調べる.
                                     var r2 = new Line(lines[i],options.marker,extension);
 

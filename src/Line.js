@@ -2,6 +2,8 @@
 
     "use strict;"
 
+    var _regExp = {};
+    var _replaceRegExp = {};
     var _uncomment = require("./uncomment.js");
 
     var Line = function( line, marker, extension ){
@@ -11,16 +13,19 @@
         }
 
         var uncmt  = _uncomment(extension);
-        var result = line.match(
-            new RegExp(
+        
+        if( typeof _regExp[extension] === "undefined" ){
+            _regExp[extension] = new RegExp(
                 "^(\\s*)" +                                 // Starting \s if exists
                 uncmt +                                     // uncomment string
                 "(\\s*)" +                                  // \s if exists
                 "(@"+marker+"|"+marker+"@)(?=\\[|\\s|$)" +  // mdpick marker that is before '[' or \s or $
                 "(?:\\[(\\w*)\\])?" +                       // syntax if exists.
                 "\\s*(.*)"                                  // inline text.
-            )
-        );
+            );
+        }
+
+        var result = line.match(_regExp[extension]);
 
         if( result instanceof Array ){
 
@@ -31,14 +36,24 @@
             this.syntax       = result[5];
             this.inline       = result[6] || "";
 
+            // 正規表現を生成する.
+            // 一度でも生成されたものはキャッシュから取得する.
+
+            var key = this.indent.length+"_"+this.whiteSpace.length;
             if( this.useSyntax() ){
                 // syntax 指定の場合はインデント文字列を
                 // @mdpick が記述されている行のインデント文字列数のみ削除する
-                this.replaceReg = new RegExp("^\\s{0,"+this.indent.length+"}");
+                key = this.syntax + "_" + key;
+                if( !_replaceRegExp[key] ){
+                    _replaceRegExp[key] = new RegExp("^\\s{0,"+this.indent.length+"}");
+                }
             }else{
                 // それ以外の場合.
-                this.replaceReg = new RegExp("^\\s{0,"+this.indent.length+"}"+uncmt+"\\s{0,"+this.whiteSpace.length+"}");
+                if( !_replaceRegExp[key] ){
+                    _replaceRegExp[key] = new RegExp("^\\s{0,"+this.indent.length+"}"+uncmt+"\\s{0,"+this.whiteSpace.length+"}");
+                }
             }
+            this.replaceReg = _replaceRegExp[key];
 
         }
 
