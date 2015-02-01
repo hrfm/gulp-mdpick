@@ -35,7 +35,7 @@
             "startSymbol" : "@md",
             "endSymbol"   : "md@",
             "verbose"     : false,
-            "independent" : false
+            "independently" : false
         },options);
 
         // --- 出力の設定.
@@ -159,7 +159,7 @@
             }
             
             // 独立して処理したい場合はファイルを追加する.
-            if( options.independent == true ){
+            if( options.independently == true ){
                 this.push(file);
             }
 
@@ -205,9 +205,9 @@
             }
 
             // 出力ファイルを生成（新規ファイル生成にはgulp-utilのFileを利用する）
-            // TODO ファイルを生成するが independent の場合はsrc をそのまま返す.
+            // TODO ファイルを生成するが independently の場合はsrc をそのまま返す.
             
-            if( options.independent ){
+            if( options.independently ){
                 
                 fs.writeFile( path.resolve( ".", options.out ), buffer.toString() );
                 

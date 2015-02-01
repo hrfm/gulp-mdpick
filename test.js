@@ -4,9 +4,9 @@ var mdpick = require('./index.js');
 
 g.src(["test/a.php","test/b.scss","test/c.js"])
  .pipe( mdpick({
-        into        : "Readme.md",
-        verbose     : false,
-        independent : true
+        into          : "Readme.md",
+        verbose       : false,
+        independently : true
     }) )
  .pipe( concat("test.txt") )
  .pipe( g.dest(".") );
