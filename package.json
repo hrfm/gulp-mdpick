@@ -1,7 +1,7 @@
 {
   "name": "gulp-mdpick",
   "version": "0.0.1",
-  "description": "Pick md text from src into markdown file.",
+  "description": "Pick markdown text from src into markdown file.",
   "main": "index.js",
   "directories": {
     "test": "test"
