@@ -82,10 +82,12 @@ gulp.src(["a.php","b.scss","c.js"])
     .dest( gulp.dest(".") )
 ```
 
-You can get below.  
-(Also that is created by gulp-mdpick)
+You can get likes below.  
+(That is created by gulp-mdpick)
 
 ---
+
+** ------ gulp-mdpick output begin ------ **
 
 <!-- @mdpick -->
 
@@ -122,6 +124,8 @@ function(a,b){
 ```
 
 <!-- mdpick@ -->
+
+** ------ gulp-mdpick output end ------ **
 
 ---
 
