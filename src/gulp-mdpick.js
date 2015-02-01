@@ -34,7 +34,8 @@
             "into"        : undefined,
             "startSymbol" : "@md",
             "endSymbol"   : "md@",
-            "verbose"     : false
+            "verbose"     : false,
+            "independent" : false
         },options);
 
         // --- 出力の設定.
@@ -157,21 +158,20 @@
                 output.push( picked.join("\n\n") );
             }
             
+            // 独立して処理したい場合はファイルを追加する.
+            if( options.independent == true ){
+                this.push(file);
+            }
+
             callback();
 
         }
 
         function flush(callback){
 
-            // 出力ファイルを生成（新規ファイル生成にはgulp-utilのFileを利用する）
-
-            var outputFile = new gutil.File({
-                base : path.join( __dirname, './fixtures/'),
-                cwd  : __dirname,
-                path : path.join( __dirname, './fixtures/', options.out )
-            });
-
             output.push("<!-- mdpick@ -->");
+
+            var buffer;
 
             if( typeof options.into !== "undefined" ){
 
@@ -185,26 +185,42 @@
                     var src  = into.toString();
 
                     if( src.match(reg) ){
-                        outputFile.contents = new Buffer( src.replace(reg,output.join("\n\n")) );
+                        buffer = new Buffer( src.replace(reg,output.join("\n\n")) );
                     }else{
-                        outputFile.contents = new Buffer( src + "\n\n" + output.join("\n\n") );
+                        buffer = new Buffer( src + "\n\n" + output.join("\n\n") );
                     }
 
 
                 }catch(e){
 
-                    outputFile.contents = new Buffer(output.join("\n\n"));
+                    buffer = new Buffer(output.join("\n\n"));
 
                 }
                 
             }else{
                 
                 log( "Create markdown file " + options.out );
-                outputFile.contents = new Buffer(output.join("\n\n"));
+                buffer = new Buffer(output.join("\n\n"));
 
             }
 
-            this.push(outputFile);
+            // 出力ファイルを生成（新規ファイル生成にはgulp-utilのFileを利用する）
+            // TODO ファイルを生成するが independent の場合はsrc をそのまま返す.
+            
+            if( options.independent ){
+                
+                fs.writeFile( path.resolve( ".", options.out ), buffer.toString() );
+                
+            }else{
+
+                this.push( new gutil.File({
+                    base     : path.join( __dirname, './fixtures/'),
+                    cwd      : __dirname,
+                    path     : path.join( __dirname, './fixtures/', options.out ),
+                    contents : buffer
+                }) );
+
+            }
 
             callback();
 
