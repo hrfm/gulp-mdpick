@@ -27,7 +27,7 @@ Write markdown between symbols or inline.
 // --- using inline
 // @md ## this is a.php markdown
 
-// --- using block
+// --- using with comment out
 // @md
 // - list1
 // - list2
@@ -41,7 +41,7 @@ Write markdown between symbols or inline.
 // --- using inline
 // @md this is b.sass markdown
 
-// --- using block
+// --- using with block comment
 /**
  * @md
  * - listA
@@ -63,7 +63,7 @@ md@
 // --- using inline
 // @md this is c.js markdown
 
-// --- using pre with syntax
+// --- using with code highlight ex)js
 // @md[js]
 // sum a b.
 function(a,b){
@@ -87,7 +87,7 @@ You can get likes below.
 
 ---
 
-** ------ gulp-mdpick output begin ------ **
+**------------------ gulp-mdpick output begin ------------------**
 
 <!-- @mdpick -->
 
@@ -125,7 +125,7 @@ function(a,b){
 
 <!-- mdpick@ -->
 
-** ------ gulp-mdpick output end ------ **
+**------------------ gulp-mdpick output end ------------------**
 
 ---
 
