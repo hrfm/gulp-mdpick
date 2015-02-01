@@ -163,9 +163,7 @@ And write markdown text between markers.
 
 into.js
 ```
-@md
 // @md This is a.js markdown
-md@
 ```
 
 README.md
