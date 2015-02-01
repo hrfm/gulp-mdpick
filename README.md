@@ -33,7 +33,7 @@ Write markdown between symbols or inline.
 // - list2
 // 
 // **bold text**
-// @md
+// md@
 ```
 
 ### b.scss
