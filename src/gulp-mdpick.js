@@ -30,10 +30,11 @@
     return module.exports = function ( options ) {
 
         options = extend({
-            "out"     : "README.md",
-            "into"    : undefined,
-            "marker"  : "md",
-            "verbose" : false
+            "out"         : "README.md",
+            "into"        : undefined,
+            "startSymbol" : "@md",
+            "endSymbol"   : "md@",
+            "verbose"     : false
         },options);
 
         // --- 出力の設定.
@@ -87,7 +88,7 @@
 
             for( var i=0,len=lines.length; i<len; i++ ){
 
-                var r = new Line(lines[i],options.marker,extension);
+                var r = new Line( lines[i], options.startSymbol, options.endSymbol, extension );
 
                 // マーカーの上限とマッチした場合.
                 if( r.isMatched() ){
@@ -118,11 +119,11 @@
                                 }else{
 
                                     // 次の行を調べる.
-                                    var r2 = new Line(lines[i],options.marker,extension);
+                                    var r2 = new Line( lines[i], options.startSymbol, options.endSymbol, extension);
 
                                     if( r2.isStart() ){
                                         // 開始タグ内に開始タグがある場合はエラー
-                                        error("Can't use @" + options.marker + " during picking.");
+                                        error("Can't use startSymbol during picking.");
                                     }else if( r2.isEnd() ){
                                         // 閉じタグがある場合は終了
                                         isEnd = true;

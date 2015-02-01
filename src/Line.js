@@ -2,26 +2,25 @@
 
     "use strict;"
 
-    var _regExp = {};
+    var _regExp        = {};
     var _replaceRegExp = {};
-    var _uncomment = require("./uncomment.js");
+    var _uncomment     = require("./uncomment.js");
 
-    var Line = function( line, marker, extension ){
-
-        if( typeof marker === "undefined" ){
-            marker = "md";
-        }
+    /*
+    @md
+    
+    md@
+    */
+    var Line = function( line, startSymbol, endSymbol, extension ){
 
         var uncmt  = _uncomment(extension);
         
         if( typeof _regExp[extension] === "undefined" ){
             _regExp[extension] = new RegExp(
-                "^(\\s*)" +                                 // Starting \s if exists
-                uncmt +                                     // uncomment string
-                "(\\s*)" +                                  // \s if exists
-                "(@"+marker+"|"+marker+"@)(?=\\[|\\s|$)" +  // mdpick marker that is before '[' or \s or $
-                "(?:\\[(\\w*)\\])?" +                       // syntax if exists.
-                "\\s*(.*)"                                  // inline text.
+                "^(\\s*)" + uncmt + "(\\s*)" +                   // \s and uncomment string if exists.
+                "("+startSymbol+"|"+endSymbol+")(?=\\[|\\s|$)" + // mdpick marker that is before '[' or \s or $.
+                "(?:\\[(\\w*)\\])?" +                            // syntax if exists.
+                "\\s*(.*)"                                       // inline text.
             );
         }
 
@@ -30,7 +29,7 @@
         if( result instanceof Array ){
 
             this.indent       = result[1] || "";
-            this.uncommentStr = result[2];
+            this.uncommentStr = result[2] || "";
             this.whiteSpace   = result[3] || "";
             this.marker       = result[4];
             this.syntax       = result[5];
@@ -39,8 +38,8 @@
             // 正規表現を生成する.
             // 一度でも生成されたものはキャッシュから取得する.
 
-            var key = this.indent.length+"_"+this.whiteSpace.length;
-            if( this.useSyntax() ){
+            var key = this.indent.length + "_" + this.whiteSpace.length + "_" + this.uncommentStr;
+            if( this.useSyntax() || this.uncommentStr == "" ){
                 // syntax 指定の場合はインデント文字列を
                 // @mdpick が記述されている行のインデント文字列数のみ削除する
                 key = this.syntax + "_" + key;
@@ -50,7 +49,7 @@
             }else{
                 // それ以外の場合.
                 if( !_replaceRegExp[key] ){
-                    _replaceRegExp[key] = new RegExp("^\\s{0,"+this.indent.length+"}"+uncmt+"\\s{0,"+this.whiteSpace.length+"}");
+                    _replaceRegExp[key] = new RegExp("^\\s*"+uncmt+"\\s{0,"+this.whiteSpace.length+"}");
                 }
             }
             this.replaceReg = _replaceRegExp[key];

@@ -1,10 +1,9 @@
 gulp-mdpick
 ============
 
-まだ力技でテスト不十分なので
-とりあえず日本語でメモがてら。
+generate markdown from files.
 
-安定したら npm に公開予定
+**Now is a beta version.**
 
 <!--
 
@@ -21,266 +20,195 @@ npm install gulp-mdpick
 
 ## Usage
 
-### `@md` - `md@` 指定で抜き出す
+Write markdown between symbols or inline.
 
-src で指定したファイルから
-
-```
-@md
-
-md@
-```
-
-でかこった範囲が、Markdown ファイルに出力されます
-
-例えば
-
-a.js
+### a.php
 ```js
-// @md
-// a.js のファイルだよ
-// @md
+// --- using inline
+// @md ## this is a.php markdown
 
-// ....
+// --- using block
+// @md
+// - list1
+// - list2
+// 
+// **bold text**
+// @md
+```
 
+### b.scss
+```scss
+// --- using inline
+// @md this is b.sass markdown
+
+// --- using block
 /**
  * @md
- * いろいろ説明を
- * ここに書いておくよ
- * @md
+ * - listA
+ * - listB
+ * **bold**
+ * md@
  */
-
+/*
+@md
+- listα
+- listβ
+**bold**
+md@
+*/
 ```
 
-b.js
+### c.js
 ```js
-// @md
-// b.js のファイルだよ
-// @md
+// --- using inline
+// @md this is c.js markdown
 
-// ....
-
+// --- using pre with syntax
+// @md[js]
+// sum a b.
+function(a,b){
+	return a+b;
+}
+// md@
 ```
 
-と書いておき
+Create README.md from these sources.
 
 ```js
-
 var mdpick = require("gulp-mdpick");
-gulp.src(["a.js","b.js"])
+
+gulp.src(["a.php","b.scss","c.js"])
     .pipe( mdpick() )
     .dest( gulp.dest("dest") )
 ```
 
-と実行すれば
+You can get below.
+(Also that is created by gulp-mdpick)
 
 dest/README.md
-```
+----
 <!-- @mdpick -->
 
 ## a.js
 
-a.jsのファイルだよ
+## this is a.js markdown
 
-いろいろ説明を  
-ここに書いておくよ
+- list1  
+- list2  
+  
+**bold text**
 
 ## b.js
 
-b.jsのファイルだよ
+this is b.js markdown
+
+- listA  
+- listB  
+**bold**
+
+- listα  
+- listβ  
+**bold**
+
+## c.js
+
+this is c.js markdown
+
+```js  
+// sum a b.  
+function(a,b){  
+	return a+b;  
+}  
+```
 
 <!-- mdpick@ -->
-```
-
-的なファイルが吐き出されます
-
-### インラインで書く
-
-```
-@md hoge
-```
-
-これはそのまま hoge と出力されます。
-
-この場合はこの行のみ観に行くので
-
-```
-// @md hoge
-// fuga
-// md@
-```
-
-と書いた場合 fuga は出力されません.
-
-### コードシンタックス使いたい場合
-
-a.js
-```js
-// @md function の説明。
-// @md[js]
-function(){
-	return "a";
-}
-// @md
-```
-
-b.js
-```js
-// @md function の説明。
-// @md[js]
-function(){
-	return "a";
-}
-// @md
-```
-
-的に書いておけば
-
-dest/README.md
-
-<pre>
-&lt;!-- @mdpick -->
-
-## a.js
-
-function の説明。
-
-```js
-function(){
-	return "a"
-}
-```
-
-## b.js
-
-function の説明。
-
-```js
-function(){
-	return "b"
-}
-```
-
-&lt;!-- mdpick@ -->
-</pre>
-
-的なのが出力されます。
-
-### いい感じに pick したい
-
-まだ不完全ですが
-一応こういう動きをします。
-
-```js
-// @md
-// コメント
-//
-//   hogehoge
-//
-// ---
-// md@
-```
-
-と書いてあったら `@md` の位置まで削って
-
-```
-コメント
-
-  hogehoge
-
----
-```
-
-と出力するように頑張ってます。
+----
 
 ## Options
 
-## out
-
-out を指定すると出力ファイル名を指定できます
-
 ```js
-mdpick({out:"hoge.md"})
+mdpick(options)
 ```
 
-的な
+## out
+Type : `string`
+
+default `README.md`
 
 ## into
+Type : `string`
 
-into は指定した md ファイルに出力内容を追記できます
+If you want to add markdown into other file.  
+You can set `into` options.
 
-もともとのファイルが
+### into behavior
+
+Using `into` option. gulp-mdpick find target likes
+
+<pre>
+&lt;!-- @mdpick -->
+&lt;!-- mdpick@ -->
+</pre>
+
+And write markdown text between markers.
+
+    If into file doesn't have symbols.  
+    Simply adding markdown text.
+
+
+#### exsample
+
+- Sources
+
+into.js
+```
+@md
+// @md This is a.js markdown
+md@
+```
 
 README.md
-```
+<pre>
 # MEMO
-もともとあったファイルだよ
+This is README.md.
+
+&lt;!-- @mdpick -->
+&lt;!-- mdpick@ -->
+
+end.
+</pre>
+
+- Execute
+
+into.js md into README.md
+
+```js
+gulp.src("into.js")
+	.pipe({
+		"into" : "README.md"
+	})
+	.pipe( gulp.dest(".") )
 ```
 
-だった場合
+- Result
 
 README.md
-```
+<pre>
 # MEMO
-もともとあったファイルだよ
+This is markdown.
 
-<!-- @mdpick -->
+&lt;!-- @mdpick -->
 
-## a.js
+## into.js
 
-a.jsのファイルだよ
+This is a.js markdown
 
-## b.js
+&lt;!-- mdpick@ -->
 
-b.jsのファイルだよ
+end.
+</pre>
 
-<!-- mdpick@ -->
 
-```
-
-的な感じに出力されます
-出力場所を指定しておきたい場合は
-
-```
-<!-- @mdpick -->
-<!-- mdpick@ -->
-```
-
-を書いておけばこの中が書き換わります。
-
-ですので
-
-README.md
-```
-# MEMO
-もともとあったファイルだよ
-
-<!-- @mdpick -->
-<!-- mdpick@ -->
-
-まだ話は続くよ
-```
-
-というファイルだった場合は
-
-README.md
-```
-# MEMO
-もともとあったファイルだよ
-
-<!-- @mdpick -->
-
-## a.js
-
-a.jsのファイルだよ
-
-## b.js
-
-b.jsのファイルだよ
-
-<!-- mdpick@ -->
-
-まだ話は続くよ
-```
-
-というファイルが出力されます。
+    `into` has nothing to do with output file name and directory.  
+    If you want to overwrite `into` file.  
+    You have to set filename with `out` option and directory with `gulp.dest`.
