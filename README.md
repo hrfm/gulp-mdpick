@@ -79,28 +79,28 @@ var mdpick = require("gulp-mdpick");
 
 gulp.src(["a.php","b.scss","c.js"])
     .pipe( mdpick() )
-    .dest( gulp.dest("dest") )
+    .dest( gulp.dest(".") )
 ```
 
-You can get below.
+You can get below.  
 (Also that is created by gulp-mdpick)
 
-dest/README.md
-----
+---
+
 <!-- @mdpick -->
 
-## a.js
+## a.php
 
-## this is a.js markdown
+### this is a.php markdown
 
 - list1  
 - list2  
   
 **bold text**
 
-## b.js
+## b.scss
 
-this is b.js markdown
+### this is b.scss markdown
 
 - listA  
 - listB  
@@ -112,7 +112,7 @@ this is b.js markdown
 
 ## c.js
 
-this is c.js markdown
+### this is c.js markdown
 
 ```js  
 // sum a b.  
@@ -122,7 +122,8 @@ function(a,b){
 ```
 
 <!-- mdpick@ -->
-----
+
+---
 
 ## Options
 

@@ -1,5 +1,5 @@
 // --- using inline
-// @md ## this is a.js markdown
+// @md ### this is a.php markdown
 
 // --- using block
 // @md
