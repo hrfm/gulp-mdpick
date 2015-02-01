@@ -1,7 +1,7 @@
 // --- using inline
 // @md ### this is a.php markdown
 
-// --- using block
+// --- using with comment out
 // @md
 // - list1
 // - list2

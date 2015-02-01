@@ -85,8 +85,6 @@ gulp.src(["a.php","b.scss","c.js"])
 You can get likes below.  
 (That is created by gulp-mdpick)
 
----
-
 **------------------ gulp-mdpick output begin ------------------**
 
 <!-- @mdpick -->
@@ -126,8 +124,6 @@ function(a,b){
 <!-- mdpick@ -->
 
 **------------------ gulp-mdpick output end ------------------**
-
----
 
 ## Options
 

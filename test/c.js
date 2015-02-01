@@ -1,7 +1,7 @@
 // --- using inline
 // @md ### this is c.js markdown
 
-// --- using pre with syntax
+// --- using with code highlight ex)js
 // @md[js]
 // sum a b.
 function(a,b){
