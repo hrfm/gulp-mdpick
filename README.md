@@ -5,8 +5,6 @@ generate markdown from files.
 
 **Now is a beta version.**
 
-<!--
-
 ## Getting started
 
 You can install this module from npm.
@@ -14,7 +12,6 @@ You can install this module from npm.
 ```sh
 npm install gulp-mdpick
 ```
--->
 
 ---
 
