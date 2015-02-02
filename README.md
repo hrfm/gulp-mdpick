@@ -173,15 +173,15 @@ Type : `string`
 
 default `README.md`
 
-## into
+## base
 Type : `string`
 
 If you want to add markdown into other file.  
-You can set `into` options.
+You can set `base` options.
 
-### into behavior
+### base behavior
 
-Using `into` option. gulp-mdpick find target likes
+Using `base` option. gulp-mdpick find target likes
 
 <pre>
 &lt;!-- @mdpick -->
@@ -190,7 +190,7 @@ Using `into` option. gulp-mdpick find target likes
 
 And write markdown text between markers.
 
-    If into file doesn't have symbols.  
+    If base file doesn't have symbols.  
     Simply adding markdown text.
 
 
@@ -198,7 +198,7 @@ And write markdown text between markers.
 
 - Sources
 
-into.js
+a.js
 ```
 // @md This is a.js markdown
 ```
@@ -216,12 +216,10 @@ end.
 
 - Execute
 
-into.js md into README.md
-
 ```js
-gulp.src("into.js")
+gulp.src("a.js")
 	.pipe({
-		"into" : "README.md"
+		"base" : "README.md"
 	})
 	.pipe( gulp.dest(".") )
 ```
@@ -235,7 +233,7 @@ This is markdown.
 
 &lt;!-- @mdpick -->
 
-## into.js
+## a.js
 
 This is a.js markdown
 
@@ -243,11 +241,6 @@ This is a.js markdown
 
 end.
 </pre>
-
-
-    `into` has nothing to do with output file name and directory.  
-    If you want to overwrite `into` file.  
-    You have to set filename with `out` option and directory with `gulp.dest`.
 
 ## writeFileName
 Type : `boolean` or `string`

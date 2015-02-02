@@ -33,7 +33,7 @@
             "startSymbol"   : "@md",       // 開始文字列.
             "endSymbol"     : "md@",       // 終了文字列.
             "out"           : "README.md", // 出力ファイル名.
-            "into"          : undefined,   // 元となるファイルを指定するかどうか.
+            "base"          : undefined,   // 元となるファイルを指定するかどうか.
             "writeFileName" : true,        // ファイル名を出力するか. 文字列を指定した場合 その文字列を手前に差し込みます.
             "independently" : false,       // true の場合 src を変更せずファイルだけ出力し次に回す.
             "verbose"       : false        // 細かなログを出力するかどうか.
@@ -184,16 +184,16 @@
 
             var buffer;
 
-            if( typeof options.into !== "undefined" ){
+            if( typeof options.base !== "undefined" ){
 
-                log( "Write markdown into " + options.into );
+                log( "Write markdown base " + options.base );
 
                 try{
 
-                    var into = fs.readFileSync( path.resolve( ".", options.into ) );
+                    var base = fs.readFileSync( path.resolve( ".", options.base ) );
 
                     var reg  = /<!\-+\s*@mdpick\s*\-+>(.|\n|\r)+<!\-+\s*mdpick@\s*\-+>/m;
-                    var src  = into.toString();
+                    var src  = base.toString();
 
                     if( src.match(reg) ){
                         buffer = new Buffer( src.replace(reg,output.join("\n\n")) );
