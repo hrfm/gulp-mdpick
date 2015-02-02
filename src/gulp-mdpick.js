@@ -30,27 +30,31 @@
     return module.exports = function ( options ) {
 
         options = extend({
-            "out"         : "README.md",
-            "into"        : undefined,
-            "startSymbol" : "@md",
-            "endSymbol"   : "md@",
-            "verbose"     : false,
-            "independently" : false
+            "startSymbol"   : "@md",       // 開始文字列.
+            "endSymbol"     : "md@",       // 終了文字列.
+            "out"           : "README.md", // 出力ファイル名.
+            "into"          : undefined,   // 元となるファイルを指定するかどうか.
+            "writeFileName" : true,        // ファイル名を出力するか. 文字列を指定した場合 その文字列を手前に差し込みます.
+            "independently" : false,       // true の場合 src を変更せずファイルだけ出力し次に回す.
+            "verbose"       : false        // 細かなログを出力するかどうか.
         },options);
-
+        
         // --- 出力の設定.
 
         var output = ["<!-- @mdpick -->"];
 
         /**
-         * 渡された file から @md md@ で囲まれた内容を抜き取る
-         *
+         * 渡された file から symbol で囲まれた内容を抜き取る
+         * 
          * @param file
          * @param encoding
          * @param callback
          * @returns {*}
          */
         function transform( file, encoding, callback ){
+
+            // --------------------------------------------------------------------------
+            // 利用可能なファイルかをチェックする.
 
             // If file is null.
             // Skip this transform.
@@ -78,20 +82,27 @@
                 return;
             }
 
+            // --------------------------------------------------------------------------
+
+            var picked = [];
+            var lines  = file.contents.toString().split(/\r?\n/);
+
+            // ファイル名の出力設定があった場合出力する.
+            if( options.writeFileName === true ){
+                picked.push( [ "## " + filename ] );
+            }else if( typeof options.writeFileName === "string" ){
+                picked.push( [ options.writeFileName + filename ] );
+            }
+
             if( options.verbose == true ){
                 log( "Processing " + fileRelativePath );
             }
-
-            // 行単位で読み込み処理する.
-
-            var picked = [["## "+filename]];
-            var lines  = file.contents.toString().split(/\r?\n/);
 
             for( var i=0,len=lines.length; i<len; i++ ){
 
                 var r = new Line( lines[i], options.startSymbol, options.endSymbol, extension );
 
-                // マーカーの上限とマッチした場合.
+                // マーカーの条件とマッチした場合.
                 if( r.isMatched() ){
 
                     var src = [], isEnd = false;
@@ -208,9 +219,9 @@
             // TODO ファイルを生成するが independently の場合はsrc をそのまま返す.
             
             if( options.independently ){
-                
+
                 fs.writeFile( path.resolve( ".", options.out ), buffer.toString() );
-                
+
             }else{
 
                 this.push( new gutil.File({

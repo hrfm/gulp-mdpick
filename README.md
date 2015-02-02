@@ -131,6 +131,17 @@ function(a,b){
 mdpick(options)
 ```
 
+
+## startSymbol
+Type : `string`
+
+default `@md`
+
+## endSymbol
+Type : `string`
+
+default `md@`
+
 ## out
 Type : `string`
 
@@ -211,3 +222,29 @@ end.
     `into` has nothing to do with output file name and directory.  
     If you want to overwrite `into` file.  
     You have to set filename with `out` option and directory with `gulp.dest`.
+
+## writeFileName
+Type : `boolean` or `string`
+
+default `true`
+
+If set as string. Write `options.writeFileName + filename`.
+
+## independently
+Type : `boolean`
+
+default `false`
+
+If set true. mdpick will not change src files.  
+Simply write markdown file to `options.out`.
+
+If you would like to pipe another tasks (concat, uglify, etc..) after mdpick.  
+You can do with using this option.
+
+## verbose
+Type : `boolean`
+
+default `false`
+
+If set true. You can see advanced logs.
+This option is for debug mainly.
