@@ -41,6 +41,7 @@
         
         // --- 出力の設定.
 
+        var _files = [];
         var output = ["<!-- @mdpick -->"];
 
         /**
@@ -163,9 +164,10 @@
 
             // pick された行が1行以上ある場合に output に追加.
             if( 1 < picked.length ){
-                //if( options.verbose == true ){
+                _files.push(fileRelativePath);
+                if( options.verbose == true ){
                     log( "Pick from " + fileRelativePath );
-                //}
+                }
                 output.push( picked.join("\n\n") );
             }
             
@@ -180,13 +182,29 @@
 
         function flush(callback){
 
+            // 対象ファイルがない場合その場でリターン.
+
+            if( _files.length == 0 ){
+                log( "Nothing to mdpick.");
+                callback();
+                return;
+            }
+
+            // ファイルがあった場合出力を行う.
+
             output.push("<!-- mdpick@ -->");
 
             var buffer;
 
             if( typeof options.base !== "undefined" ){
 
-                log( "Write markdown base " + options.base );
+                if( options.verbose == true ){
+                    log( "Create " + options.out + " based on " + options.base );
+                }else if( _files.length == 1 ){
+                    log( "Create " + options.out + " based on " + options.base + " with " + _files[0] );
+                }else{
+                    log( "Create " + options.out + " based on " + options.base + " with " + _files.length + " sources" );
+                }
 
                 try{
 
@@ -201,7 +219,6 @@
                         buffer = new Buffer( src + "\n\n" + output.join("\n\n") );
                     }
 
-
                 }catch(e){
 
                     buffer = new Buffer(output.join("\n\n"));
@@ -210,7 +227,14 @@
                 
             }else{
                 
-                log( "Create markdown file " + options.out );
+                if( options.verbose == true ){
+                    log( "Create " + options.out );
+                }else if( _files.length == 1 ){
+                    log( "Create " + options.out + " with " + _files[0] );
+                }else{
+                    log( "Create " + options.out + " with " + _files.length + " sources" );
+                }
+
                 buffer = new Buffer(output.join("\n\n"));
 
             }
