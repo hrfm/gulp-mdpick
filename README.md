@@ -127,15 +127,17 @@ function(a,b){
 ## Use mdpick independently
 
 For example during use watch.  
-Probably want to continue another task (concat, uglify, etc..) after mdpick.
+Probably want to continue another task (concat, uglify, etc..) after mdpick.  
+But mdpick pipe returns will change to markdown file.
 
-In that case. You can do with `independently` option.  
+In that case. You can avoid that with `independently` option.  
 
 ```js
 gulp.task('mytask',function(){
     gulp.src('**/*.js')
         .pipe( mdpick({
-            independently : true
+            'out' : 'path/to/dest/README.md',
+            'independently' : true
         }))
         .pipe( uglify() )
         .pipe( concat('all.js') )
@@ -143,7 +145,10 @@ gulp.task('mytask',function(){
 });
 ```
 
-If use indepenently option.  
+This task makes `./README.md` file from `**/*.js` files.
+After that. Run `uglify` and `concat` as src.
+
+Use indepenently option.  
 Output file path is depends on `options.out`.
 
 ---
