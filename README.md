@@ -145,7 +145,7 @@ gulp.task('mytask',function(){
 });
 ```
 
-This task makes `./README.md` file from `**/*.js` files.
+This task makes `./README.md` file from `**/*.js` files.  
 After that. Run `uglify` and `concat` as src.
 
 Use indepenently option.  
