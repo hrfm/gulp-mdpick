@@ -86,7 +86,7 @@ You can get likes below.
 
 <!-- @mdpick -->
 
-## a.php
+## test/a.php
 
 ### this is a.php markdown
 
@@ -95,7 +95,7 @@ You can get likes below.
   
 **bold text**
 
-## b.scss
+## test/b.scss
 
 ### this is b.scss markdown
 
@@ -107,7 +107,7 @@ You can get likes below.
 - listβ  
 **bold**
 
-## c.js
+## test/c.js
 
 ### this is c.js markdown
 

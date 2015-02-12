@@ -76,6 +76,9 @@
             var fileRelativePath = path.relative( ".", file.path );
             var filename  = file.path.substr( file.path.lastIndexOf("/")+1, file.path.length );
             var extension = filename.substr( filename.lastIndexOf(".")+1, filename.length );
+            
+            var basepath  = ( typeof options.base !== 'undefined' ) ? path.resolve('.',options.base) : path.resolve(__dirname);
+            basepath = basepath.substr(0,basepath.lastIndexOf('/'));
 
             // markdown は無視.
             if( extension.toLowerCase() == "md" ){
@@ -89,12 +92,13 @@
             var lines  = file.contents.toString().split(/\r?\n/);
 
             // ファイル名の出力設定があった場合出力する.
+            
             if( options.writeFileName === true ){
-                picked.push( [ "## " + filename ] );
+                picked.push( [ "## " + path.relative(basepath,file.path) ] );
             }else if( typeof options.writeFileName === "string" ){
-                picked.push( [ options.writeFileName + filename ] );
+                picked.push( [ options.writeFileName + path.relative(basepath,file.path) ] );
             }
-
+            
             if( options.verbose == true ){
                 log( "Processing " + fileRelativePath );
             }
